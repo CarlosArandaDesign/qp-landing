@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quebrada Paulista Roleplay - Apresentação</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root{
+    --header-h: 60px;
+    --bg: #0f0f0f;
+    --header-bg: #161616;
+    --border: #2a2a2a;
+    --text: #eaeaea;
+    --text-dim: #9a9a9a;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+
+  /* Header fixo */
+  header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-h);
+    background: #2d2d2d;
+    z-index: 1000;
+  }
+
+  .header-container{
+    max-width: 1600px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 16px;
+  }
+
+  .brand{
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-controls{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-shrink: 0;
+  }
+
+  .page-indicator{
+    font-size: 14px;
+    color: var(--text-dim);
+    min-width: 52px;
+    text-align: center;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .zoom-controls{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .zoom-controls button{
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #1f1f1f;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: background .15s;
+  }
+  .zoom-controls button:hover{ background: #2a2a2a; }
+  .zoom-controls button:active{ background: #333; }
+
+  .zoom-value{
+    font-size: 15px;
+    color: var(--text-dim);
+    min-width: 42px;
+    text-align: center;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .download-btn{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .download-btn:hover{ background: var(--accent-hover); }
+
+  /* Container principal */
+  main{
+    margin-top: var(--header-h);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #zoom-wrapper{
+    width: 100%;
+    max-width: 1920px;
+    display: block;
+    line-height: 0;
+    font-size: 0;
+  }
+
+  .page-section{
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-width: 1920px;
+    display: block;
+    line-height: 0;
+  }
+
+  .page-section img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  @media (max-width: 640px){
+    .brand{ font-size: 13px; }
+    .header-controls{ gap: 10px; }
+    .zoom-controls{ display: none; }
+    .download-btn{ padding: 0; width: 34px; justify-content: center; }
+    .download-btn span{ display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <div class="brand">Apresentação Quebrada Paulista Roleplay</div>
+    <div class="header-controls">
+      <div class="page-indicator" id="page-indicator">1/31</div>
+      <div class="zoom-controls">
+        <button id="zoom-out" aria-label="Diminuir zoom"><i class="fa-solid fa-minus"></i></button>
+        <div class="zoom-value" id="zoom-value">80%</div>
+        <button id="zoom-in" aria-label="Aumentar zoom"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <a class="download-btn" id="download-btn" href="qp_apresentacao.pdf" download="qp_apresentacao.pdf">
+        <i class="fa-regular fa-circle-down"></i>
+        <span>Baixar PDF</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="zoom-wrapper"></div>
+</main>
+
+<script>
+  const TOTAL_PAGES = 31;
+
+  // ---------- Zoom ----------
+  let zoomPercent = 80;
+  const MIN_ZOOM = 25;
+  const MAX_ZOOM = 200;
+  const STEP = 10;
+  const zoomValueEl = document.getElementById('zoom-value');
+
+  function applyZoom(){
+    wrapper.style.zoom = zoomPercent / 100;
+    zoomValueEl.textContent = `${zoomPercent}%`;
+  }
+
+  document.getElementById('zoom-in').addEventListener('click', () => {
+    zoomPercent = Math.min(MAX_ZOOM, zoomPercent + STEP);
+    applyZoom();
+  });
+
+  document.getElementById('zoom-out').addEventListener('click', () => {
+    zoomPercent = Math.max(MIN_ZOOM, zoomPercent - STEP);
+    applyZoom();
+  });
+
+  // ---------- Monta as seções, ignorando imagens que não existem ----------
+  const wrapper = document.getElementById('zoom-wrapper');
+  const sections = [];
+
+  function buildSections(){
+    for(let i = 1; i <= TOTAL_PAGES; i++){
+      const src = `images/${i}.png`;
+      const img = new Image();
+      img.src = src;
+      img.alt = `Página ${i}`;
+      img.dataset.index = i;
+
+      img.onerror = () => {
+        // imagem não existe: remove a seção inteira
+        const section = img.closest('.page-section');
+        if(section) section.remove();
+        sections.splice(sections.indexOf(section), 1);
+        updatePageIndicator();
+      };
+
+      const section = document.createElement('div');
+      section.className = 'page-section';
+      section.dataset.index = i;
+      section.appendChild(img);
+      wrapper.appendChild(section);
+      sections.push(section);
+    }
+  }
+  buildSections();
+  applyZoom();
+
+  // ---------- Indicador de página (baseado em scroll) ----------
+  const pageIndicator = document.getElementById('page-indicator');
+
+  function updatePageIndicator(){
+    const visibleSections = Array.from(wrapper.querySelectorAll('.page-section'));
+    if(visibleSections.length === 0){
+      pageIndicator.textContent = '0/0';
+      return;
+    }
+
+    const scrollPos = window.scrollY + window.innerHeight / 3;
+    let current = visibleSections[0];
+    for(const sec of visibleSections){
+      if(sec.offsetTop <= scrollPos){
+        current = sec;
+      }
+    }
+    const currentIdx = visibleSections.indexOf(current) + 1;
+    pageIndicator.textContent = `${currentIdx}/${visibleSections.length}`;
+  }
+
+  window.addEventListener('scroll', () => {
+    window.requestAnimationFrame(updatePageIndicator);
+  });
+  window.addEventListener('resize', updatePageIndicator);
+  setTimeout(updatePageIndicator, 300);
+</script>
+
+</body>
+</html>
